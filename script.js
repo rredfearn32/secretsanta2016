@@ -1,14 +1,17 @@
 var app = {
 
 	eventListener: function() {
-		$("input[type=radio]").on("click", function(event){
+		$(".name").on("click", function(event){
+			var target = $(event.target);
+			target.siblings(".name").removeClass("chosen");
+			target.addClass("chosen");
 			$("button").removeClass("ghost");
 		});
 
-		$("form").on("submit", function(event){
+		$("#choose-name").off("click").on("click", function(event){
 			event.preventDefault();
 
-			var nameChosen = $(event.target).serialize().replace("recipient=", "");
+			var nameChosen = $(".name.chosen").attr("data-name");
 			var type = "POST";
 			var url = "/get-secret-santa.php";
 			var data = {"name":nameChosen};
@@ -18,7 +21,7 @@ var app = {
 				url: url,
 				data: data,
 				success: function(result){
-					console.log(result);
+					alert("You are the secret santa for... " + result);
 				}
 			});
 		});

@@ -1,13 +1,21 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link rel="stylesheet" href="normalize.css" />
 		<link rel="stylesheet" href="style.css" />
 		<title>Secret Santa 2016</title>
 	</head>
 	<body>
-		<h1>Secret Santa 2016</h1>
-		<form>
-			<?php
+		<video id="bg-vid" autoplay muted loop playsinline>
+			<source src="christmas.mp4" type="video/mp4" />
+		</video>
+		<div class="flex">
+			<div class="inner">
+				<h1>Secret Santa 2016</h1>
+				<p>
+					What's your name?
+				</p>
+				<?php
 				require 'config.php';
 
 				// Create connection
@@ -26,10 +34,12 @@
 					if ($result->num_rows > 0)
 					{
 						// output data of each row
+						echo "<ul>";
 						while($row = $result->fetch_assoc())
 						{
-							echo "<input type='radio' name='recipient' value='" . $row["name"] . "' id='" . $row["name"] . "' /><label for='" . $row["name"] . "'>" . $row["name"] . "</label><br />";
+							echo "<li data-name='" . $row["name"] . "' class='name' />" . $row["name"] . "</li>";
 						}
+						echo "</ul>";
 					}
 					else
 					{
@@ -38,9 +48,10 @@
 				}
 
 				$conn->close();
-			?>
-			<button class="ghost">Submit</button>
-		</form>
+				?>
+				<button id="choose-name" class="ghost">Submit</button>
+			</div>
+		</div>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
 		<script type="text/javascript" src="script.js"></script>
