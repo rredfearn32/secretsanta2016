@@ -5,7 +5,7 @@ var app = {
 			var target = $(event.target);
 			target.siblings(".name").removeClass("chosen");
 			target.addClass("chosen");
-			$("button").removeClass("ghost");
+			$("#choose-name").removeClass("ghost");
 		});
 
 		$("#choose-name").off("click").on("click", function(event){

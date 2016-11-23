@@ -22,12 +22,12 @@ h1 {
   z-index: 2; }
 
 .inner {
-  max-width: 900px;
   width: calc(100% - 40px);
-  padding: 0 20px;
+  padding: 20px;
   text-align: center;
-  max-width: 650px;
-  background: rgba(255, 255, 255, 0.75); }
+  max-width: 700px;
+  background: rgba(255, 255, 255, 0.75);
+  margin: 0 15px; }
 
 ul {
   margin: 0;
@@ -36,8 +36,23 @@ ul {
     list-style: none;
     display: inline-block;
     cursor: pointer;
-    user-select: none; }
+    user-select: none;
+    background: #e74c3c;
+    padding: 20px;
+    width: 100px;
+    color: white;
+    margin: 10px;
+    border-radius: 3px;
+    border: 3px solid #f8c9c4; }
+    ul li.name:hover {
+      background: #d62c1a; }
     ul li.name.chosen {
-      font-weight: bold; }
+      font-weight: bold;
+      background: none;
+      border: 3px dashed #e74c3c;
+      color: #e74c3c; }
+
+#choose-name {
+  background: white; }
 
 /*# sourceMappingURL=style.css.map */

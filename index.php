@@ -49,7 +49,7 @@
 
 				$conn->close();
 				?>
-				<button id="choose-name" class="ghost">Submit</button>
+				<a id="choose-name" class="ghost">Submit</a>
 			</div>
 		</div>
 
