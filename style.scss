@@ -1,8 +1,10 @@
 $santa-red: #e74c3c;
+$white: #f0f0f0;
 
 body
 {
-
+	font-family: 'Open Sans', sans-serif;
+	color: $white;
 }
 
 video
@@ -18,12 +20,21 @@ video
 
 .ghost
 {
-	display: none;
+	display: none !important;
 }
 
 h1
 {
 	margin: 0;
+	font-family: 'Mountains of Christmas', cursive;
+	font-weight: normal;
+	font-size: 70px;
+	text-shadow: 0px 3px 0px darken($santa-red, 10%);
+	border-bottom: 1px solid rgba($white, 0.5);
+}
+
+p {
+	margin: 20px 0;
 }
 
 .flex
@@ -32,6 +43,7 @@ h1
 	justify-content: center;
 	align-items: center;
 	height: 100vh;
+	background: rgba($santa-red, 0.75);
 
 	position: relative;
 	z-index: 2;
@@ -43,8 +55,8 @@ h1
 	padding: 20px;
 	text-align: center;
 	max-width: 700px;
-	background: rgba(white, 0.75);
 	margin: 0 15px;
+	position: relative;
 }
 
 ul
@@ -58,30 +70,105 @@ ul
 		display: inline-block;
 		cursor: pointer;
 		user-select: none;
-		background: $santa-red;
+		background: $white;
 		padding: 20px;
 		width: 100px;
-		color: white;
+		color: $santa-red;
 		margin: 10px;
 		border-radius: 3px;
-		border: 3px solid lighten($santa-red, 30%);
+		font-weight: bold;
+		border: 1px solid $santa-red;
+		position: relative;
+		z-index: 2;
+		transition: color 0.5s, opacity 0.25s;
+
+		&::after {
+			content: "";
+			width: 0;
+			height: 100%;
+			background: $santa-red;
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			margin: auto;
+			z-index: -1;
+			transition: width 0.5s;
+		}
 
 		&:hover {
-			background: darken($santa-red, 10%);
+			color: $white;
+
+			&::after {
+				width: 100%;
+			}
 		}
 
 		&.chosen
 		{
-			font-weight: bold;
 			// background: darken($santa-red, 20%);
 			// box-shadow: inset 0px 0px 5px darken($santa-red, 50%);
-			background: none;
-			border: 3px dashed $santa-red;
+			// position: absolute;
+			background: $white;
 			color: $santa-red;
+			z-index: 10;
+
+			&::after {
+				display: none;
+			}
+		}
+
+		&.not-chosen {
+			opacity: 0.3;
 		}
 	}
 }
 
 #choose-name {
-	background: white;
+	background: none;
+	color: $white;
+	border: 1px solid $white;
+	padding: 20px 0;
+	border-radius: 50px;
+	max-width: 150px;
+	width: 100%;
+	display: inline-block;
+	position: absolute;
+	margin: auto;
+	left: 0;
+	right: 0;
+	bottom: -70px;
+	cursor: pointer;
+	transition: color 0.25s, background 0.25s, max-width 0.25s;
+
+	&:hover {
+		background: $white;
+		color: $santa-red;
+	}
+
+	&.result {
+		max-width: 700px;
+		background: $white;
+		color: $santa-red;
+		border-radius: 0;
+		bottom: -90px;
+		cursor: default;
+
+		&:hover {
+			background: $white;
+			color: $santa-red;
+			border-radius: 0;
+		}
+
+		a {
+			text-decoration: none;
+			border-bottom: 1px dotted $santa-red;
+			color: $santa-red;
+		}
+	}
+
+	.result-name {
+		font-weight: bold;
+		font-size: 22px;
+	}
 }

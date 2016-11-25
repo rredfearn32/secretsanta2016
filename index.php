@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 	<head>
+		<link href="https://fonts.googleapis.com/css?family=Mountains+of+Christmas|Open+Sans" rel="stylesheet">
+		<link href="/fonts/font-awesome/css/font-awesome.min.css" rel="stylesheet">
 		<link rel="stylesheet" href="normalize.css" />
 		<link rel="stylesheet" href="style.css" />
 		<title>Secret Santa 2016</title>
@@ -49,7 +51,9 @@
 
 				$conn->close();
 				?>
-				<a id="choose-name" class="ghost">Submit</a>
+				<div id="choose-name" class="ghost">
+					Submit <i class="fa fa-arrow-right" aria-hidden="true"></i>
+				</div>
 			</div>
 		</div>
 
