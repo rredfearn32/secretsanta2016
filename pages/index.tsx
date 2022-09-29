@@ -69,19 +69,6 @@ export default function Home() {
     setDealtRecipient(recipient);
   };
 
-  const reset = () => {
-    const userNames = users.map(({ name }) => name);
-    const promises = userNames.map((name) => {
-      const currentUserRef = doc(FBfirestore, 'users', name);
-      return updateDoc(currentUserRef, {
-        choiceMade: false,
-        chosen: false,
-      });
-    });
-
-    Promise.all(promises).then(() => alert('RESET'));
-  };
-
   return (
     <>
       <video id="bg-vid" autoPlay muted loop playsInline>
@@ -127,13 +114,17 @@ export default function Home() {
                 </button>
               )}
             </>
+          ) : isLoadingUsers ? (
+            <div id="loader">
+              <div id="gift">🎁</div>
+              <p>Loading...</p>
+            </div>
           ) : (
             <p>
               Everybody has been assigned their secret santa. Merry Christmas!
             </p>
           )}
         </div>
-        <button onClick={() => reset()}>RESET</button>
       </div>
     </>
   );
