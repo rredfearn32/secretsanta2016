@@ -3,58 +3,75 @@ import { User } from './types';
 const randomIntFromInterval = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
+/**
+    THE LOGIC 
+    by Elena Jung
+
+    function ( currentUser: User, allUsers: User[] ) {
+
+      1. Get current users availableChoices
+
+      2. Remove anyone who has already been chosen by others to get unchosenUserName
+
+      3. Get everyone who hasn't choiceMade
+
+      4. Create key:value map of { unchosenUserName: X }
+
+      x = loop through (3), if [unchosenUserName] is in (3).availableChoices, X++
+
+      5. If anyone has pop = 0, choose them as recipient
+
+      6. If nobody has higher, choose a random recipient
+
+    }
+   */
+
+const calculatePopularity = (
+  globalUsersWithoutChoiceMade: User[],
+  unchosenUserName: string,
+): number =>
+  globalUsersWithoutChoiceMade.reduce((acc, obj) => {
+    if (obj.possibleChoices.includes(unchosenUserName)) {
+      return acc + 1;
+    }
+    return acc;
+  }, 0);
+
 export const calculateRecipient = (
-  unchosenUsers: User[],
+  allUsers: User[],
   currentUser: User,
 ): User => {
-  const { name: currentUserName } = currentUser;
+  const currentUserUnchosenPossibleChoicesObjs = currentUser.possibleChoices // Get current users list of possible choices
+    .map((choiceName) => allUsers.find(({ name }) => choiceName === name)) // Convert them into user objects
+    .filter(({ chosen }) => !chosen); // Remove the ones which have been chosen
 
-  const availableUsers = currentUser.possibleChoices
-    .map((name) => unchosenUsers.find((user) => user.name === name))
-    .filter(Boolean);
-  const chosenNames = unchosenUsers
-    .map((user) => user.chosen && user.name)
-    .filter(Boolean);
-  const peopleWhoHaveMadeTheirChoice = unchosenUsers
-    .map((user) => user.choiceMade && user.name)
-    .filter(Boolean);
+  const allUsersWhoHaventMadeAChoiceYet = allUsers.filter(
+    ({ choiceMade }) => !choiceMade,
+  );
 
-  if (peopleWhoHaveMadeTheirChoice.includes(currentUserName)) return;
+  const popularityMapping: { [key: string]: number } = {};
 
-  const dictionaryOfPopularity: { [key: string]: number } = {};
-
-  availableUsers.forEach(({ name }) => {
-    if (!chosenNames.includes(name)) {
-      const nameOfPersonForPopularity = name;
-      let popularity = 0;
-
-      availableUsers.forEach(({ name, possibleChoices }) => {
-        if (!peopleWhoHaveMadeTheirChoice.includes(name)) {
-          if (possibleChoices.includes(nameOfPersonForPopularity)) {
-            popularity++;
-          }
-        }
-      });
-
-      dictionaryOfPopularity[nameOfPersonForPopularity] = popularity;
-    }
+  currentUserUnchosenPossibleChoicesObjs.forEach(({ name }) => {
+    popularityMapping[name] = calculatePopularity(
+      allUsersWhoHaventMadeAChoiceYet,
+      name,
+    );
   });
 
-  const minPop = Object.entries(dictionaryOfPopularity).sort(
-    ([, popA], [, popB]) => popA - popB,
-  )[0][1];
-  const lowestPopularityNames = [];
+  // If a user has populatiry of 0, choose them
+  const userNameWithPopZero = Object.entries(popularityMapping).find(
+    ([, val]) => val === 0,
+  )?.[0];
 
-  Object.entries(dictionaryOfPopularity).forEach(([key, value]) => {
-    if (value === minPop) {
-      lowestPopularityNames.push(key);
-    }
-  });
+  if (userNameWithPopZero) {
+    return allUsers.find(({ name }) => name === userNameWithPopZero);
+  }
 
-  const lengthOfLowPopNamesArray = lowestPopularityNames.length;
-  const randomNumber = randomIntFromInterval(0, lengthOfLowPopNamesArray - 1);
+  // If no user has poppularity 0, return a random user from the users avalable list
+  const randomIndex = randomIntFromInterval(
+    0,
+    currentUserUnchosenPossibleChoicesObjs.length - 1,
+  );
 
-  const result = lowestPopularityNames[randomNumber];
-
-  return unchosenUsers.find(({ name }) => name === result);
+  return currentUserUnchosenPossibleChoicesObjs[randomIndex];
 };
