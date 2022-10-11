@@ -3,4 +3,5 @@ export type User = {
   choiceMade: boolean;
   possibleChoices: string[];
   chosen: boolean;
+  chosenPerson: string | undefined;
 };

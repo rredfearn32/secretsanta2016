@@ -3,16 +3,19 @@ import { User } from './types';
 const randomIntFromInterval = (min: number, max: number) =>
   Math.floor(Math.random() * (max - min + 1) + min);
 
-export const calculateRecipient = (users: User[], currentUser: User): User => {
+export const calculateRecipient = (
+  unchosenUsers: User[],
+  currentUser: User,
+): User => {
   const { name: currentUserName } = currentUser;
 
   const availableUsers = currentUser.possibleChoices
-    .map((name) => users.find((user) => user.name === name))
+    .map((name) => unchosenUsers.find((user) => user.name === name))
     .filter(Boolean);
-  const chosenNames = users
+  const chosenNames = unchosenUsers
     .map((user) => user.chosen && user.name)
     .filter(Boolean);
-  const peopleWhoHaveMadeTheirChoice = users
+  const peopleWhoHaveMadeTheirChoice = unchosenUsers
     .map((user) => user.choiceMade && user.name)
     .filter(Boolean);
 
@@ -37,8 +40,6 @@ export const calculateRecipient = (users: User[], currentUser: User): User => {
     }
   });
 
-  console.log(dictionaryOfPopularity);
-
   const minPop = Object.entries(dictionaryOfPopularity).sort(
     ([, popA], [, popB]) => popA - popB,
   )[0][1];
@@ -55,5 +56,5 @@ export const calculateRecipient = (users: User[], currentUser: User): User => {
 
   const result = lowestPopularityNames[randomNumber];
 
-  return users.find(({ name }) => name === result);
+  return unchosenUsers.find(({ name }) => name === result);
 };
