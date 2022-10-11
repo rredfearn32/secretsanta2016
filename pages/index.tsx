@@ -1,11 +1,4 @@
-import {
-  collection,
-  deleteField,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-} from 'firebase/firestore';
+import { collection, doc, getDocs, query, updateDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { FBfirestore } from '../firebase/initFirebase';
 import { calculateRecipient } from '../utils/calculateRecipient';
@@ -77,19 +70,19 @@ export default function Home() {
     setDealtRecipient(recipient);
   };
 
-  const reset = () => {
-    const userNames = users.map(({ name }) => name);
-    const promises = userNames.map((name) => {
-      const currentUserRef = doc(FBfirestore, 'users', name);
-      return updateDoc(currentUserRef, {
-        choiceMade: false,
-        chosen: false,
-        chosenPerson: deleteField(),
-      });
-    });
+  // const reset = () => {
+  //   const userNames = users.map(({ name }) => name);
+  //   const promises = userNames.map((name) => {
+  //     const currentUserRef = doc(FBfirestore, 'users', name);
+  //     return updateDoc(currentUserRef, {
+  //       choiceMade: false,
+  //       chosen: false,
+  //       chosenPerson: deleteField(),
+  //     });
+  //   });
 
-    Promise.all(promises).then(() => alert('RESET'));
-  };
+  //   Promise.all(promises).then(() => alert('RESET'));
+  // };
 
   return (
     <>
