@@ -26,7 +26,7 @@ export default function Home() {
       setIsLoadingUsers(true);
 
       // Create a reference to the cities collection
-      const usersRef = collection(FBfirestore, 'users');
+      const usersRef = collection(FBfirestore, 'users2');
       // Create a query against the collection.
       const q = query(usersRef);
 
