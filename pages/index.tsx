@@ -26,7 +26,7 @@ export default function Home() {
       setIsLoadingUsers(true);
 
       // Create a reference to the cities collection
-      const usersRef = collection(FBfirestore, 'users2');
+      const usersRef = collection(FBfirestore, 'uses2');
       // Create a query against the collection.
       const q = query(usersRef);
 
@@ -35,6 +35,7 @@ export default function Home() {
         const loadedUsers = [];
         docs.forEach((doc) => {
           loadedUsers.push({ name: doc.id, ...doc.data() });
+          console.log(doc.id);
         });
         setUsers(loadedUsers);
         setIsLoadingUsers(false);
