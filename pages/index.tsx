@@ -1,4 +1,11 @@
-import { collection, doc, getDocs, query, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  deleteField,
+  doc,
+  getDocs,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { FBfirestore } from '../firebase/initFirebase';
 import { calculateRecipient } from '../utils/calculateRecipient';
@@ -13,6 +20,8 @@ const reportError = () => {
   );
 };
 
+const COLLECTION_NAME = 'uses2';
+
 export default function Home() {
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [users, setUsers] = useState<User[] | undefined>();
@@ -26,7 +35,7 @@ export default function Home() {
       setIsLoadingUsers(true);
 
       // Create a reference to the cities collection
-      const usersRef = collection(FBfirestore, 'uses2');
+      const usersRef = collection(FBfirestore, COLLECTION_NAME);
       // Create a query against the collection.
       const q = query(usersRef);
 
@@ -35,7 +44,6 @@ export default function Home() {
         const loadedUsers = [];
         docs.forEach((doc) => {
           loadedUsers.push({ name: doc.id, ...doc.data() });
-          console.log(doc.id);
         });
         setUsers(loadedUsers);
         setIsLoadingUsers(false);
@@ -52,14 +60,14 @@ export default function Home() {
       );
 
     // Update the currentUser Firebase Doc to choiceMade=true
-    const currentUserRef = doc(FBfirestore, 'users', currentUser.name);
+    const currentUserRef = doc(FBfirestore, COLLECTION_NAME, currentUser.name);
     await updateDoc(currentUserRef, {
       choiceMade: true,
       chosenPerson: recipient.name,
     }).catch(() => reportError());
 
     // Update the dealtRecipient Firebase doc to chosen=true
-    const dealtRecipientRef = doc(FBfirestore, 'users', recipient.name);
+    const dealtRecipientRef = doc(FBfirestore, COLLECTION_NAME, recipient.name);
     await updateDoc(dealtRecipientRef, {
       chosen: true,
     }).catch(() => reportError());
@@ -67,19 +75,19 @@ export default function Home() {
     setDealtRecipient(recipient);
   };
 
-  // const reset = () => {
-  //   const userNames = users.map(({ name }) => name);
-  //   const promises = userNames.map((name) => {
-  //     const currentUserRef = doc(FBfirestore, 'users', name);
-  //     return updateDoc(currentUserRef, {
-  //       choiceMade: false,
-  //       chosen: false,
-  //       chosenPerson: deleteField(),
-  //     });
-  //   });
+  const reset = () => {
+    const userNames = users.map(({ name }) => name);
+    const promises = userNames.map((name) => {
+      const currentUserRef = doc(FBfirestore, COLLECTION_NAME, name);
+      return updateDoc(currentUserRef, {
+        choiceMade: false,
+        chosen: false,
+        chosenPerson: deleteField(),
+      });
+    });
 
-  //   Promise.all(promises).then(() => alert('RESET'));
-  // };
+    Promise.all(promises).then(() => alert('RESET'));
+  };
 
   return (
     <>
@@ -137,7 +145,9 @@ export default function Home() {
             </p>
           )}
         </div>
-        {/* <button onClick={() => reset()}>RESET</button> */}
+        <button onClick={() => reset()} className="ghost">
+          RESET
+        </button>
       </div>
     </>
   );

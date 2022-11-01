@@ -58,16 +58,16 @@ export const calculateRecipient = (
     );
   });
 
-  // If a user has populatiry of 0, choose them
-  const userNameWithPopZero = Object.entries(popularityMapping).find(
-    ([, val]) => val === 0,
+  // If a user has populatiry of 1, choose them
+  const userNameWithPopOne = Object.entries(popularityMapping).find(
+    ([, val]) => val === 1,
   )?.[0];
 
-  if (userNameWithPopZero) {
-    return allUsers.find(({ name }) => name === userNameWithPopZero);
+  if (userNameWithPopOne) {
+    return allUsers.find(({ name }) => name === userNameWithPopOne);
   }
 
-  // If no user has poppularity 0, return a random user from the users avalable list
+  // If no user has poppularity 1, return a random user from the users avalable list
   const randomIndex = randomIntFromInterval(
     0,
     currentUserUnchosenPossibleChoicesObjs.length - 1,
