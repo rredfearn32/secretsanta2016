@@ -20,7 +20,7 @@ const reportError = () => {
   );
 };
 
-const COLLECTION_NAME = 'users';
+const COLLECTION_NAME = 'uses2';
 
 export default function Home() {
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
