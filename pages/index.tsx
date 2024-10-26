@@ -47,10 +47,12 @@ export default function Home() {
   const onChoiceMade = async () => {
     const recipient: User | undefined = calculateRecipient(users, currentUser);
 
-    if (!recipient)
+    if (!recipient) {
       alert(
         'You have already made a selection, so something has gone wrong. Please contact Robbie!',
       );
+      return;
+    }
 
     // Update the currentUser Firebase Doc to choiceMade=true
     const currentUserRef = doc(FBfirestore, COLLECTION_NAME, currentUser.name);
