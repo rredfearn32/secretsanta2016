@@ -1,4 +1,11 @@
-import { collection, doc, getDocs, query, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+} from 'firebase/firestore';
 import { useEffect, useState } from 'react';
 import { FBfirestore } from '../firebase/initFirebase';
 import { calculateRecipient } from '../utils/calculateRecipient';
@@ -13,22 +20,35 @@ const reportError = () => {
   );
 };
 
-const COLLECTION_NAME = 'uses2';
-
 export default function Home() {
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [users, setUsers] = useState<User[] | undefined>();
   const [currentUser, setCurrentUser] = useState<User | undefined>();
   const [dealtRecipient, setDealtRecipient] = useState<User | undefined>();
+  const [selectedCollection, setSelectedCollection] = useState<
+    string | undefined
+  >();
 
   const usersWhoHaventMadeAChoice = users?.filter((u) => !u.choiceMade);
 
   useEffect(() => {
-    if (!users && !isLoadingUsers) {
+    const configRef = doc(FBfirestore, 'config', 'collection-in-use');
+    getDoc(configRef).then((doc) => {
+      if (doc.exists()) {
+        setSelectedCollection(doc.data().name);
+        return;
+      }
+
+      console.log('No config found');
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!users && !isLoadingUsers && selectedCollection) {
       setIsLoadingUsers(true);
 
       // Create a reference to the cities collection
-      const usersRef = collection(FBfirestore, COLLECTION_NAME);
+      const usersRef = collection(FBfirestore, selectedCollection);
       // Create a query against the collection.
       const q = query(usersRef);
 
@@ -42,7 +62,7 @@ export default function Home() {
         setIsLoadingUsers(false);
       });
     }
-  }, [users, isLoadingUsers]);
+  }, [users, isLoadingUsers, selectedCollection]);
 
   const onChoiceMade = async () => {
     const recipient: User | undefined = calculateRecipient(users, currentUser);
@@ -55,14 +75,22 @@ export default function Home() {
     }
 
     // Update the currentUser Firebase Doc to choiceMade=true
-    const currentUserRef = doc(FBfirestore, COLLECTION_NAME, currentUser.name);
+    const currentUserRef = doc(
+      FBfirestore,
+      selectedCollection,
+      currentUser.name,
+    );
     await updateDoc(currentUserRef, {
       choiceMade: true,
       chosenPerson: recipient.name,
     }).catch(() => reportError());
 
     // Update the dealtRecipient Firebase doc to chosen=true
-    const dealtRecipientRef = doc(FBfirestore, COLLECTION_NAME, recipient.name);
+    const dealtRecipientRef = doc(
+      FBfirestore,
+      selectedCollection,
+      recipient.name,
+    );
     await updateDoc(dealtRecipientRef, {
       chosen: true,
     }).catch(() => reportError());
