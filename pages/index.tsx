@@ -28,13 +28,16 @@ export default function Home() {
   const [selectedCollection, setSelectedCollection] = useState<
     string | undefined
   >();
+  const [isConfirmBlocked, setIsConfirmBlocked] = useState(false);
 
   const usersWhoHaventMadeAChoice = users?.filter((u) => !u.choiceMade);
 
   useEffect(() => {
+    setIsLoadingUsers(true);
     const configRef = doc(FBfirestore, 'config', 'collection-in-use');
     getDoc(configRef).then((doc) => {
       if (doc.exists()) {
+        setIsLoadingUsers(false);
         setSelectedCollection(doc.data().name);
         return;
       }
@@ -65,6 +68,7 @@ export default function Home() {
   }, [users, isLoadingUsers, selectedCollection]);
 
   const onChoiceMade = async () => {
+    setIsConfirmBlocked(true);
     const recipient: User | undefined = calculateRecipient(users, currentUser);
 
     if (!recipient) {
@@ -96,6 +100,7 @@ export default function Home() {
     }).catch(() => reportError());
 
     setDealtRecipient(recipient);
+    setIsConfirmBlocked(false);
   };
 
   return (
@@ -137,7 +142,11 @@ export default function Home() {
                 ))}
               </ul>
               {currentUser && (
-                <button id="choose-name" onClick={onChoiceMade}>
+                <button
+                  id="choose-name"
+                  onClick={onChoiceMade}
+                  disabled={isConfirmBlocked}
+                >
                   Submit{' '}
                   <i className="fa fa-arrow-right" aria-hidden="true"></i>
                 </button>
