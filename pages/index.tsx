@@ -72,9 +72,7 @@ export default function Home() {
     const recipient: User | undefined = calculateRecipient(users, currentUser);
 
     if (!recipient) {
-      alert(
-        'You have already made a selection, so something has gone wrong. Please contact Robbie!',
-      );
+      alert('Uh oh! Looks like something went wrong. Please contact Robbie!');
       return;
     }
 
